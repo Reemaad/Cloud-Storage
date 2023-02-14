@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class User {
-    private Integer userid;
+    private Integer userId;
     private String username;
     private String salt;
     private String password;

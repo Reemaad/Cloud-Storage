@@ -15,6 +15,11 @@ public class AuthenticationService implements AuthenticationProvider {
     private HashService hashService;
     private UserMapper userMapper;
 
+    public AuthenticationService(UserMapper userMapper, HashService hashService) {
+        this.userMapper = userMapper;
+        this.hashService = hashService;
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
@@ -28,12 +33,11 @@ public class AuthenticationService implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
             }
         }
-
         return null;
     }
 
     @Override
-    public boolean supports(Class<?> aClass) {
-        return false;
+    public boolean supports(Class<?> authentication) {
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

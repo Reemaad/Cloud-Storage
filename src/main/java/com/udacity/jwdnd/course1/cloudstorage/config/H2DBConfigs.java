@@ -14,11 +14,17 @@ public class H2DBConfigs {
     @Primary
     @ConfigurationProperties("app.datasource")
 
-    public DataSourceProperties DataSourceProperties() {return new DataSourceProperties();}
+    public DataSourceProperties DataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
     @Bean
     @Primary
     @ConfigurationProperties("app.datasource.configuration")
 
     public HikariDataSource DataSource(DataSourceProperties dataSourceProperties) {
-        return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();}
+        return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+    }
+
+
 }

@@ -11,7 +11,7 @@
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
             <div id="logoutDiv">
-                <form action="#" method="POST">
+                <form th:action="@{/logout}" action="#" method="POST">
                     <button type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
@@ -25,7 +25,13 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" enctype="multipart/form-data" method="POST">
+                        <form id="file-upload" th:action="@{/uploadFile}" action="#" enctype="multipart/form-data" method="POST">
+                            <div th:if="${fileSuccess}" class="alert alert-dark">
+                                <span th:text="${fileSuccess}"></span>
+                            </div>
+                            <div th:if="${fileError}" class="alert alert-danger">
+                                <span th:text="${fileError}"></span>
+                            </div>
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
@@ -49,18 +55,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="file : ${files}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <a th:href="@{/downloadFile(fileId=${file.getFileId()})}" target="_blank" class="btn btn-success">View</a>
+                                        <a th:href="@{/deleteFile(fileId=${file.getFileId()})}" class="btn btn-danger">Delete</a>
                                     </td>
-                                    <th scope="row">ExampleFile.txt</th>
+                                    <th th:text="${file.getFileName()}" scope="row"></th>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                        <div th:if="${noteSuccess}" class="alert alert-dark">
+                            <span th:text="${noteSuccess}"></span>
+                        </div>
+                        <div th:if="${noteError}" class="alert alert-danger">
+                            <span th:text="${noteError}"></span>
+                        </div>
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
@@ -75,13 +87,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <button th:data-noteId="${note.noteId}" th:data-noteTitle="${note.noteTitle}" th:data-noteDescription="${note.noteDescription}"
+                                                    th:onclick="showNoteModal(this.getAttribute('data-noteId'), this.getAttribute('data-noteTitle'), this.getAttribute('data-noteDescription'))"
+                                                    type="button" class="btn btn-success">Edit</button>
+                                            <a th:href="@{/deleteNote(noteId=${note.getNoteId()})}" class="btn btn-danger">Delete</a>
                                         </td>
-                                        <th scope="row">Example Note Title</th>
-                                        <td>Example Note Description </td>
+                                        <th th:text="${note.getNoteTitle()}" scope="row"></th>
+                                        <td th:text="${note.getNoteDescription()}"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -97,7 +111,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form th:object="${note}" th:action="@{/addNote}" action="#" method="POST">
                                             <input type="hidden" name="noteId" id="note-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
@@ -208,6 +222,16 @@
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+
+            $(document).ready(function(){
+                $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                    localStorage.setItem('activeTab', $(e.target).attr('href'));
+                });
+                var activeTab = localStorage.getItem('activeTab');
+                if(activeTab){
+                    $('#nav-tab a[href="' + activeTab + '"]').tab('show');
+                }
+            });
         </script>
     </body>
 </html>
