@@ -35,8 +35,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
             http.formLogin()
                     .defaultSuccessUrl("/home", true);
 
-            http.logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout=true");
+            http.logout().permitAll();
+
         }
 }
