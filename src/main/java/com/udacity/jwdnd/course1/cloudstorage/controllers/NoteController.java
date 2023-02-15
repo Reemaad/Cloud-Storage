@@ -1,8 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
-import com.udacity.jwdnd.course1.cloudstorage.models.File;
 import com.udacity.jwdnd.course1.cloudstorage.models.Note;
-import com.udacity.jwdnd.course1.cloudstorage.models.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -40,7 +35,7 @@ public class NoteController {
             }
         }
 
-        return "redirect:result?"+result+"=true";
+        return "redirect:result?" + result + "=true";
     }
 
     @GetMapping("/deleteNote")
@@ -55,7 +50,7 @@ public class NoteController {
             result = "error";
         }
 
-        return "redirect:result?"+result+"=true";
+        return "redirect:result?" + result + "=true";
 
     }
 }

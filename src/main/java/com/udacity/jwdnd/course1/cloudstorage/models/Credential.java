@@ -1,6 +1,5 @@
 package com.udacity.jwdnd.course1.cloudstorage.models;
 
-import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

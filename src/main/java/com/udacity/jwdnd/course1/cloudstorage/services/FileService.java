@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+
 @Slf4j
 @Service
 public class FileService {
@@ -35,7 +36,7 @@ public class FileService {
     public int insertFile(MultipartFile file, String username) {
         User user = userMapper.getUser(username);
         try {
-            return fileMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), Long.toString(file.getSize()), user.getUserId() , file.getBytes()));
+            return fileMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), Long.toString(file.getSize()), user.getUserId(), file.getBytes()));
         } catch (IOException e) {
             log.error(e.getMessage());
             return -1;

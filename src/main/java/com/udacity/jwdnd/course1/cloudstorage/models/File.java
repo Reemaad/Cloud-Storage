@@ -3,8 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.sql.Blob;
-
 @Data
 @AllArgsConstructor
 public class File {

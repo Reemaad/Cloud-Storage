@@ -23,8 +23,8 @@ public class AuthController {
     @GetMapping("/login")
     public String loginView(HttpServletRequest request, HttpServletResponse response, Model model) {
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-        if(savedRequest != null) {
-            if(savedRequest.getParameterMap().containsKey("successSignup"))
+        if (savedRequest != null) {
+            if (savedRequest.getParameterMap().containsKey("successSignup"))
                 model.addAttribute("successSignup", true);
         }
         return "login";

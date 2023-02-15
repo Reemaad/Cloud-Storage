@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -23,7 +23,7 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/uploadFile")
-    public String uploadFile(@RequestParam("fileUpload") MultipartFile file, Authentication authentication, Model model) {
+    public String uploadFile(@RequestParam("fileUpload") MultipartFile file, Authentication authentication) {
         String result = null;
 
         if (fileService.isFileNameAlreadyUploaded(file.getOriginalFilename(), authentication.getName())) {
@@ -40,7 +40,7 @@ public class FileController {
     }
 
     @GetMapping("/deleteFile")
-    public String deleteFile(@RequestParam("fileId") Integer fileId, Authentication authentication, Model model) {
+    public String deleteFile(@RequestParam("fileId") Integer fileId) {
         String result = null;
 
         boolean isFileDeletedSuccessfully = fileService.deleteFile(fileId);
