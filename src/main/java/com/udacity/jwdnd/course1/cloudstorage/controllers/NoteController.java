@@ -24,56 +24,38 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @PostMapping("/addNote")
-    public String addNote(@ModelAttribute("note") Note note, Authentication authentication, Model model) {
-        String noteSuccess = null;
-        String noteError = null;
+    @PostMapping("/submitNote")
+    public String submitNote(@ModelAttribute("note") Note note, Authentication authentication, Model model) {
+        String result = null;
 
         if (noteService.isNoteAlreadyExist(note.getNoteId())) {
             noteService.updateNote(note);
-            noteSuccess = "Note updated successfully!";
+            result = "success";
         } else {
             int rowNumber = noteService.addNote(note, authentication.getName());
             if (rowNumber < 0) {
-                noteError = "Something went wrong while adding your note. Please try again.";
+                result = "error";
             } else {
-                noteSuccess = "Note added successfully!";
+                result = "success";
             }
         }
 
-        if (noteError == null) {
-            model.addAttribute("noteSuccess", noteSuccess);
-        } else {
-            model.addAttribute("noteError", noteError);
-        }
-
-        List<Note> userNotes = noteService.getUserNotes(authentication.getName());
-        model.addAttribute("notes", userNotes);
-        return "home";
+        return "redirect:result?"+result+"=true";
     }
 
     @GetMapping("/deleteNote")
-    public String deleteFile(@RequestParam("noteId") Integer noteId, Authentication authentication, Model model) {
-        String noteSuccess = null;
-        String noteError = null;
+    public String deleteNote(@RequestParam("noteId") Integer noteId, Authentication authentication, Model model) {
+        String result = null;
 
         boolean isFileDeletedSuccessfully = noteService.deleteNote(noteId);
 
         if (isFileDeletedSuccessfully) {
-            noteSuccess = "Note deleted successfully!";
+            result = "success";
         } else {
-            noteError = "Something went wrong while deleting Your note. Please try again.";
+            result = "error";
         }
 
-        if (noteError == null) {
-            model.addAttribute("noteSuccess", noteSuccess);
-        } else {
-            model.addAttribute("noteError", noteError);
-        }
+        return "redirect:result?"+result+"=true";
 
-        List<Note> userNotes = noteService.getUserNotes(authentication.getName());
-        model.addAttribute("notes", userNotes);
-
-        return "home";
     }
 }
