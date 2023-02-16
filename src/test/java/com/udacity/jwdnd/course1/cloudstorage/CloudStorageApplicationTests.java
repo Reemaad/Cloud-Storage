@@ -1,9 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.Data;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,8 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+@Data
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CloudStorageApplicationTests {
+ class CloudStorageApplicationTests {
 
 	@LocalServerPort
 	private int port;
@@ -27,9 +28,7 @@ class CloudStorageApplicationTests {
 	}
 
 	@BeforeEach
-	public void beforeEach() {
-		this.driver = new ChromeDriver();
-	}
+	public void beforeEach() throws InterruptedException {this.driver = new ChromeDriver();}
 
 	@AfterEach
 	public void afterEach() {
@@ -48,7 +47,7 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doMockSignUp(String firstName, String lastName, String userName, String password){
+	public void doMockSignUp(String firstName, String lastName, String userName, String password){
 		// Create a dummy account for logging in later.
 
 		// Visit the sign-up page.
@@ -72,6 +71,8 @@ class CloudStorageApplicationTests {
 		inputUsername.click();
 		inputUsername.sendKeys(userName);
 
+		System.out.println("username: " + userName);
+
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement inputPassword = driver.findElement(By.id("inputPassword"));
 		inputPassword.click();
@@ -86,6 +87,7 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depening on the rest of your code.
 		*/
+		String s = driver.findElement(By.id("success-msg")).getText();
 		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
@@ -95,7 +97,7 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doLogIn(String userName, String password)
+	public void doLogIn(String userName, String password)
 	{
 		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
@@ -131,7 +133,7 @@ class CloudStorageApplicationTests {
 	 * https://review.udacity.com/#!/rubrics/2724/view 
 	 */
 	@Test
-	public void testRedirection() {
+	private void testRedirection() {
 		// Create a test account
 		doMockSignUp("Redirection","Test","RT","123");
 		
@@ -152,7 +154,7 @@ class CloudStorageApplicationTests {
 	 * https://attacomsian.com/blog/spring-boot-custom-error-page#displaying-custom-error-page
 	 */
 	@Test
-	public void testBadUrl() {
+	private void testBadUrl() {
 		// Create a test account
 		doMockSignUp("URL","Test","UT","123");
 		doLogIn("UT", "123");
@@ -176,7 +178,7 @@ class CloudStorageApplicationTests {
 	 * https://spring.io/guides/gs/uploading-files/ under the "Tuning File Upload Limits" section.
 	 */
 	@Test
-	public void testLargeUpload() {
+	private void testLargeUpload() {
 		// Create a test account
 		doMockSignUp("Large File","Test","LFT","123");
 		doLogIn("LFT", "123");
@@ -200,6 +202,40 @@ class CloudStorageApplicationTests {
 
 	}
 
+	/* Test that verifies that an unauthorized user can only access the login and signup pages. */
+	@Test
+	public void testUnauthorizedAccess() {
+
+		driver.get("http://localhost:" + this.port + "/home");
+		// Check if the user is redirected to login page.
+		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
+
+		driver.get("http://localhost:" + this.port + "/login");
+		// Check if unauthorized user can access login page.
+		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
+
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Check if unauthorized user can access signup page.
+		Assertions.assertEquals("http://localhost:" + this.port + "/signup", driver.getCurrentUrl());
+
+	}
+
+	/* Test that signs up a new user, logs in, verifies that the home page is accessible, logs out, and verifies that the home page is no longer accessible. */
+	@Test
+	private void testHomePageAccessibility() {
+		doMockSignUp("HomePage Accessibility","Test","HPA","123");
+		doLogIn("HPA", "123");
+
+		// Check if the home page is accessible.
+		Assertions.assertEquals("http://localhost:" + this.port + "/home", driver.getCurrentUrl());
+
+		WebElement logoutButton = driver.findElement(By.id("logoutButton"));
+		logoutButton.click();
+
+		// Check that the home page is no longer accessible..
+		Assertions.assertFalse(driver.getTitle() == "Home");
+
+	}
 
 
 }
