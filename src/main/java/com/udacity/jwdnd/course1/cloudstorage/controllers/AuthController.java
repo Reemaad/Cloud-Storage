@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @GetMapping("/signup")
-    public String signupView(@ModelAttribute("user") User user, Model model) { //needs to review
+    public String signupView(@ModelAttribute("user") User user) { //needs to review
         return "signup";
     }
 

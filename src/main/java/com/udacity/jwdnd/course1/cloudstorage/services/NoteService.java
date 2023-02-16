@@ -25,7 +25,7 @@ public class NoteService {
 
     public int addNote(Note note, String username) {
         User user = userMapper.getUser(username);
-        return noteMapper.insert(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
+        return noteMapper.insertNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
     }
 
     public void updateNote(Note note) {
